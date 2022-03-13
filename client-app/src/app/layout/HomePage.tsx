@@ -6,13 +6,8 @@ import NavBar from './NavBar';
 import { v4 as uuid } from 'uuid';
 import agent from '../api/agent';
 import Loading from './Loading';
-import { BrowserRouter, Route, Router, Routes } from 'react-router-dom';
-import HomePage from './HomePage';
-import TestErrors from '../../features/errors/TestError';
-import { ToastContainer } from 'react-toastify';
-import NotFound from '../../features/errors/NotFound';
 
-function App() {
+function HomePage() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<
     Activity | undefined
@@ -93,18 +88,25 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <div>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/errors" element={<TestErrors />} />
-            <Route path='*' element={<NotFound />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
-      <ToastContainer position="bottom-right" hideProgressBar />
+      {loading && <Loading content="Loading App" />}
+      {/*<Header as='h2' icon='users' content='Reactivities' />*/}
+      <NavBar openForm={handleFormOpen} />
+      <Container style={{ marginTop: '7em' }}>
+        <ActivityDashboard
+          activities={activities}
+          selectedActivity={selectedActivity}
+          selectActivity={handleSelectActivity}
+          cancelSelectActivity={handleCancelSelectActivity}
+          editMode={editMode}
+          openForm={handleFormOpen}
+          closeForm={handleFormClose}
+          createOrEdit={handleCreateOrEditActivity}
+          deleteActivity={handleDeleteActivity}
+          submitting={submitting}
+        />
+      </Container>
     </>
   );
 }
 
-export default App;
+export default HomePage;
