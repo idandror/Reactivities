@@ -5,7 +5,7 @@ interface Props {
   openForm: () => void;
 }
 
-const NavBar = ({openForm}:Props) => {
+const NavBar = ({ openForm }: Props) => {
   return (
     <Menu inverted fixed="top">
       <Container>

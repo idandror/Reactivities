@@ -1,10 +1,11 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Container } from 'semantic-ui-react';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import { Activity } from '../models/activity';
 import NavBar from './NavBar';
 import { v4 as uuid } from 'uuid';
+import agent from '../api/agent';
+import Loading from './Loading';
 
 function App() {
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -12,14 +13,21 @@ function App() {
     Activity | undefined
   >(undefined);
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get<Activity[]>('http://localhost:5000/api/activities')
-      .then((response) => {
-        console.log(response);
-        setActivities(response.data);
+    //axios.get<Activity[]>('http://localhost:5000/api/activities')
+    agent.Activities.list().then((response) => {
+      console.log(response);
+      let activities: Activity[] = [];
+      activities = response.map((activity) => {
+        activity.date = activity.date.split('T')[0];
+        return activity;
       });
+      console.log(activities);
+      setActivities(response);
+      setLoading(false);
+    });
   }, []);
 
   function handleSelectActivity(id: string) {
@@ -55,6 +63,7 @@ function App() {
 
   return (
     <>
+      {loading && <Loading content="Loading App" />}
       {/*<Header as='h2' icon='users' content='Reactivities' />*/}
       <NavBar openForm={handleFormOpen} />
       <Container style={{ marginTop: '7em' }}>
